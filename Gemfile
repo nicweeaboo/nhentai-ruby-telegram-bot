@@ -4,4 +4,6 @@ source 'https://rubygems.org' do
     gem 'json'
     gem 'nhentai-api'
     gem 'net-http-persistent', '~> 2.9', '>= 2.9.4'
+    gem 'rest-client'
+    gem 'nokogiri'
 end
