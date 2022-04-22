@@ -35,21 +35,20 @@ class Bot
 
           when /^\/code ([0-9]+)$/
             code = message.text.delete('^0-9')
-            if message.text == "/code #{code}"
-              doujinshi=Doujinshi.new(code)
-              if doujinshi.exists?
-                tags = []
-                doujinshi.tags.each do |tag|
-                  tags << tag.name.gsub!('<span class="name">','')
-                end
-                begin
-                  cover = doujinshi.cover
-                rescue
-                  html = RestClient.get("https://nhentai.net/g/#{doujinshi.id}/")
-                  html_parsed=Nokogiri::HTML(html)
-                  img = html_parsed.css("div#cover>a>img")
-                  cover = img.attr("data-src").value
-                end
+            doujinshi=Doujinshi.new(code)
+            if doujinshi.exists?
+              tags = []
+              doujinshi.tags.each do |tag|
+                tags << tag.name.gsub!('<span class="name">','')
+              end
+              begin
+                cover = doujinshi.cover
+              rescue
+                html = RestClient.get("https://nhentai.net/g/#{doujinshi.id}/")
+                html_parsed=Nokogiri::HTML(html)
+                img = html_parsed.css("div#cover>a>img")
+                cover = img.attr("data-src").value
+              end
                 bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                 parse_mode: "HTML")
               else
