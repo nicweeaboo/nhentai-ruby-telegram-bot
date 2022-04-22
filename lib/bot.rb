@@ -51,9 +51,8 @@ class Bot
               end
                 bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                 parse_mode: "HTML")
-              else
+            else
                 bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
-              end
             end
           
           when '/joke', '/joke@sadistic_oneesan_ruby_ bot'
