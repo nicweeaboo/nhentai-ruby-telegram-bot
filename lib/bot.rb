@@ -33,7 +33,7 @@ class Bot
               bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
             end
 
-          when /\/code/
+          when /^\/code ([0-9]+)$/
             code = message.text.delete('^0-9')
             if message.text == "/code #{code}"
               doujinshi=Doujinshi.new(code)
