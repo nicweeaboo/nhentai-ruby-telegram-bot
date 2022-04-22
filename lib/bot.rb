@@ -1,5 +1,7 @@
 require 'telegram/bot'
 require 'nhentai-api'
+require 'rest-client'
+require 'nokogiri'
 
 class Bot
 
@@ -36,7 +38,15 @@ class Bot
                 doujinshi.tags.each do |tag|
                   tags << tag.name.gsub!('<span class="name">','')
                 end
-                bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{doujinshi.cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
+                begin
+                  cover = doujinshi.cover
+                rescue
+                  html = RestClient.get("https://nhentai.net/g/#{doujinshi.id}/")
+                  html_parsed=Nokogiri::HTML(html)
+                  img = html_parsed.css("div#cover>a>img")
+                  cover = img.attr("data-src").value
+                end
+                bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                 parse_mode: "HTML")
               else
                 bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
@@ -46,13 +56,15 @@ class Bot
           when '/instagram', '/instagram@sadistic_oneesan_ruby_bot'
             bot.api.send_message(chat_id: message.chat.id,
               text: "<b>Página Oficial 1 Real a Hora no instagram</b> 🌚\n👉 https://www.instagram.com/1realahora/",
-              parse_mode: "HTML")
+              parse_mode: "HTML",
+              disable_web_page_preview: true)
 
           when '/facebook', '/facebook@sadistic_oneesan_ruby_bot'
             bot.api.send_message(chat_id: message.chat.id, 
               text: "<b>Página Oficial 1 Real a Hora no facebook</b> 🌚\n👉 https://pt-br.facebook.com/1realahora/",
-              parse_mode: "HTML")
-              
+              parse_mode: "HTML",
+              disable_web_page_preview: true)
+
           end
         end
       end
