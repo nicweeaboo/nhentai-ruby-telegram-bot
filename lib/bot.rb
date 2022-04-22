@@ -2,8 +2,11 @@ require 'telegram/bot'
 require 'nhentai-api'
 require 'rest-client'
 require 'nokogiri'
+require_relative 'joke.rb'
 
 class Bot
+
+  JOKE_TYPES = ['single', 'twopart']
 
   def initialize
 
@@ -29,6 +32,7 @@ class Bot
             else
               bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
             end
+
           when /\/code/
             code = message.text.delete('^0-9')
             if message.text == "/code #{code}"
@@ -52,7 +56,18 @@ class Bot
                 bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
               end
             end
-            
+          
+          when '/joke', '/joke@sadistic_oneesan_ruby_ bot'
+            joke = Joke.new(JOKE_TYPES.sample)
+            jokes = joke.run
+            if joke.type == 'twopart'
+              bot.api.send_message(chat_id: message.chat.id, 
+                text: "<b>- #{jokes[0]}</b>\n\n- #{jokes[1]}", parse_mode: "HTML")
+            else
+              bot.api.send_message(chat_id: message.chat.id, 
+                text: "#{jokes[0]}")
+            end
+
           when '/instagram', '/instagram@sadistic_oneesan_ruby_bot'
             bot.api.send_message(chat_id: message.chat.id,
               text: "<b>Página Oficial 1 Real a Hora no instagram</b> 🌚\n👉 https://www.instagram.com/1realahora/",
