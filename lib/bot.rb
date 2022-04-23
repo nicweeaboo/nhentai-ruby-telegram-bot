@@ -152,6 +152,10 @@ class Bot
             milf = list.to_a.sample
             bot.api.send_message(chat_id: message.chat.id,
               text: "I recommend <a href='#{milf.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{milf.values[0]}", parse_mode: "HTML")
+          
+          when '/about', '/about@sadistic_oneesan_ruby_bot'
+            bot.api.send_message(chat_id: message.chat.id,
+              text: "Bot made by <b>nicweeaboo</b>\n👉🏼 Bot source code: <a href='https://github.com/nicweeaboo/nhentai-ruby-telegram-bot'>Check out here</a>\n\nPls do not google my username.", parse_mode: "HTML")
           end
         end
       end
