@@ -118,16 +118,16 @@ class Bot
             end
           
           when '/feet', '/feet@sadistic_oneesan_ruby_bot'
-            url = "https://yande.re/post?page=#{rand(1..800)}&tags=feet"
-            html = RestClient.get(url)  
-            html_parsed = Nokogiri::HTML(html)
-            list= html_parsed.css("ul#post-list-posts")
-            elements = list.css("li>a.directlink")
-            images = []
-            elements.each {|item| images << item['href']}
-            images.shuffle!
             begin
               retries ||= 0
+              url = "https://yande.re/post?page=#{rand(1..800)}&tags=feet"
+              html = RestClient.get(url)  
+              html_parsed = Nokogiri::HTML(html)
+              list= html_parsed.css("ul#post-list-posts")
+              elements = list.css("li>a.directlink")
+              images = []
+              elements.each {|item| images << item['href']}
+              images.shuffle!
               image_1 = images.sample
               image_2 = images.sample
               image_3 = images.sample
@@ -137,11 +137,10 @@ class Bot
                 Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_3}")
               ]
               bot.api.send_media_group(chat_id: message.chat.id, media: media)
-              sleep(40)
-            rescue Telegram::Bot::Exceptions::ResponseError
-              sleep(60)
+            rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
+              sleep(20)
               retry if (retries += 1) < 3
-              bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong...")
+              bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
             end
           
           when '/milf', '/milf@sadistic_oneesan_ruby_bot'
