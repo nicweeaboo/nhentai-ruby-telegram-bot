@@ -6,4 +6,6 @@ source 'https://rubygems.org' do
     gem 'net-http-persistent', '~> 2.9', '>= 2.9.4'
     gem 'rest-client'
     gem 'nokogiri'
+    gem 'down'
+    gem 'tempfile'
 end

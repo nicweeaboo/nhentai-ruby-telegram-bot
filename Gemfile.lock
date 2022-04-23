@@ -4,6 +4,8 @@ GEM
 GEM
   remote: https://rubygems.org/
   specs:
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -14,6 +16,8 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    down (5.3.1)
+      addressable (~> 2.8)
     dry-inflector (0.2.1)
     faraday (1.10.0)
       faraday-em_http (~> 1.0)
@@ -52,6 +56,7 @@ GEM
     nhentai-api (0.2.2)
     nokogiri (1.13.4-x86_64-linux)
       racc (~> 1.4)
+    public_suffix (4.0.7)
     racc (1.6.0)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -63,6 +68,7 @@ GEM
       dry-inflector
       faraday (~> 1.0)
       virtus (~> 2.0)
+    tempfile (0.1.2)
     thread_safe (0.3.6)
     unf (0.1.4)
       unf_ext
@@ -76,12 +82,14 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  down!
   json!
   net-http-persistent (~> 2.9, >= 2.9.4)!
   nhentai-api!
   nokogiri!
   rest-client!
   telegram-bot-ruby!
+  tempfile!
 
 RUBY VERSION
    ruby 2.7.1p83
