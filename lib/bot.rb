@@ -65,12 +65,6 @@ class Bot
                 text: "#{jokes[0]}")
             end
 
-          when '/instagram', '/instagram@sadistic_oneesan_ruby_bot'
-            bot.api.send_message(chat_id: message.chat.id,
-              text: "<b>Página Oficial 1 Real a Hora no instagram</b> 🌚\n👉 https://www.instagram.com/1realahora/",
-              parse_mode: "HTML",
-              disable_web_page_preview: true)
-
           when '/facebook', '/facebook@sadistic_oneesan_ruby_bot'
             bot.api.send_message(chat_id: message.chat.id, 
               text: "<b>Página Oficial 1 Real a Hora no facebook</b> 🌚\n👉 https://pt-br.facebook.com/1realahora/",
@@ -117,7 +111,7 @@ class Bot
               meme.unlink
             end
           
-          when '/feet', '/feet@sadistic_oneesan_ruby_bot'
+          when '/genshin_impact', '/genshin_impact@sadistic_oneesan_ruby_bot'
             begin
               retries ||= 0
               url = "https://yande.re/post?page=#{rand(1..100)}&tags=genshin_impact"
