@@ -10,6 +10,9 @@ I just made for the meme and fun. Probably won't code nothing more.
 `/milf` - returns a random milf english doujinshi from the 10 first popular pages of current week.
 `/neko` - returns a neko from NekoAPI.<br>
 `/feet` - returns 3 images from the yande.re website.<br>
+`/thighhighs` - returns images from thighhighs tag.<br>
+`/yuri` - returns images from yuri tag.<br>
+`/genshin_impact` - returns genshin impact images. <br>
 `/joke` - returns a joke from JokeAPI.<br>
 `/meme` - returns a meme from reddit.<br>
 `/about` - returns info about the bot.<br>
