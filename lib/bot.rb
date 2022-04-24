@@ -131,10 +131,12 @@ class Bot
               image_1 = images.sample
               image_2 = images.sample
               image_3 = images.sample
+              image_4 = images.sample
               media = [
                 Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
                 Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
-                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_3}")
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_3}"),
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_4}")
               ]
               bot.api.send_media_group(chat_id: message.chat.id, media: media)
             rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
@@ -143,6 +145,36 @@ class Bot
               bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
             end
           
+          when '/yuri', '/yuri@sadistic_oneesan_ruby_bot'
+            begin
+              retries ||= 0
+              url = "https://yande.re/post?page=#{rand(1..300)}&tags=yuri"
+              html = RestClient.get(url)  
+              html_parsed = Nokogiri::HTML(html)
+              list= html_parsed.css("ul#post-list-posts")
+              elements = list.css("li>a.directlink")
+              images = []
+              elements.each {|item| images << item['href']}
+              images.shuffle!
+              image_1 = images.sample
+              image_2 = images.sample
+              image_3 = images.sample
+              image_4 = images.sample
+              image_5 = images.sample
+              media = [
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_3}"),
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_4}"),
+                Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_5}"),
+              ]
+              bot.api.send_media_group(chat_id: message.chat.id, media: media)
+            rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
+              sleep(20)
+              retry if (retries += 1) < 3
+              bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
+            end
+
           when '/milf', '/milf@sadistic_oneesan_ruby_bot'
             url = "https://nhentai.net/search/?q=milf+-chinese+-japanese&sort=popular-week&page=#{rand(1..10)}"
             html = RestClient.get(url)
