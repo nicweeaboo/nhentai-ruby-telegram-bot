@@ -18,9 +18,14 @@ class Bot
           when Telegram::Bot::Types::Message
 
             case message.text
-      
+          
             when '/today', '/today@sadistic_oneesan_ruby_bot'
-              today_doujinshi = Doujinshi.new(Time.now.strftime("%d%m%y"))
+              begin
+                today_doujinshi = Doujinshi.new(Time.now.strftime("%d%m%y"))
+              rescue Exception => e
+                bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
+                break
+              end
               if today_doujinshi.exists?
                 today_doujinshi_tags = []
                 today_doujinshi.tags.each do |tag|
@@ -35,7 +40,12 @@ class Bot
 
             when /^\/code ([0-9]+)$/
               code = message.text.delete('^0-9')
-              doujinshi=Doujinshi.new(code)
+              begin
+                doujinshi=Doujinshi.new(code)
+              rescue Exception => e
+                bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
+                break
+              end
               if doujinshi.exists?
                 tags = []
                 begin
@@ -69,12 +79,6 @@ class Bot
                 bot.api.send_message(chat_id: message.chat.id, 
                   text: "#{jokes[0]}")
               end
-
-            when '/facebook', '/facebook@sadistic_oneesan_ruby_bot'
-              bot.api.send_message(chat_id: message.chat.id, 
-                text: "<b>Página Oficial 1 Real a Hora no facebook</b> 🌚\n👉 https://pt-br.facebook.com/1realahora/",
-                parse_mode: "HTML",
-                disable_web_page_preview: true)
               
             when '/neko', '/neko@sadistic_oneesan_ruby_bot'
               neko = Neko.new(NEKO_TYPES.sample).run
@@ -84,7 +88,12 @@ class Bot
 
             when '/random', '/random@sadistic_oneesan_ruby_bot'
               begin
-                doujinshi = Doujinshi.new(rand(10000...999999))
+                begin
+                  doujinshi = Doujinshi.new(rand(1000...999999))
+                rescue Exception => e
+                  bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
+                  break
+                end
               end until doujinshi.exists?
               tags = []
               begin
@@ -105,20 +114,6 @@ class Bot
                 bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                 parse_mode: "HTML")
 
-            when '/meme', '/meme@sadistic_oneesan_ruby_bot'
-              uri = URI(MEME_ENDPOINT)
-              response = Net::HTTP.get(uri)
-              meme_url = JSON.parse(response)['url']
-              meme_extension = meme_url.split('.')[2]
-              meme = Tempfile.new(['meme', meme_extension])
-              begin
-                meme = Down.download(meme_url)
-                bot.api.send_photo(chat_id: message.chat.id, photo: Faraday::UploadIO.new(meme, "image/#{meme_extension}"))
-              ensure
-                meme.close
-                meme.unlink
-              end
-            
             when '/genshin_impact', '/genshin_impact@sadistic_oneesan_ruby_bot'
               begin
                 retries ||= 0
@@ -130,11 +125,11 @@ class Bot
                 images = []
                 elements.each {|item| images << item['href']}
                 images.shuffle!
-                image_1 = images.sample
-                image_2 = images.sample
-                image_3 = images.sample
-                image_4 = images.sample
-                image_5 = images.sample
+                image_1 = images[0]
+                image_2 = images[1]
+                image_3 = images[2]
+                image_4 = images[3]
+                image_5 = images[4]
                 media = [
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
@@ -160,10 +155,10 @@ class Bot
                 images = []
                 elements.each {|item| images << item['href']}
                 images.shuffle!
-                image_1 = images.sample
-                image_2 = images.sample
-                image_3 = images.sample
-                image_4 = images.sample
+                image_1 = images[0]
+                image_2 = images[1]
+                image_3 = images[2]
+                image_4 = images[3]
                 media = [
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
@@ -173,7 +168,7 @@ class Bot
                 bot.api.send_media_group(chat_id: message.chat.id, media: media)
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
-                retry if (retries += 1) < 3
+                retry if (retries += 1) < 2
                 bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
               end
             
@@ -188,11 +183,11 @@ class Bot
                 images = []
                 elements.each {|item| images << item['href']}
                 images.shuffle!
-                image_1 = images.sample
-                image_2 = images.sample
-                image_3 = images.sample
-                image_4 = images.sample
-                image_5 = images.sample
+                image_1 = images[0]
+                image_2 = images[1]
+                image_3 = images[2]
+                image_4 = images[3]
+                image_5 = images[4]
                 media = [
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
@@ -203,7 +198,7 @@ class Bot
                 bot.api.send_media_group(chat_id: message.chat.id, media: media)
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
-                retry if (retries += 1) < 3
+                retry if (retries += 1) < 2
                 bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
               end
 
@@ -218,11 +213,11 @@ class Bot
                 images = []
                 elements.each {|item| images << item['href']}
                 images.shuffle!
-                image_1 = images.sample
-                image_2 = images.sample
-                image_3 = images.sample
-                image_4 = images.sample
-                image_5 = images.sample
+                image_1 = images[0]
+                image_2 = images[1]
+                image_3 = images[2]
+                image_4 = images[3]
+                image_5 = images[4]
                 media = [
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_1}"),
                   Telegram::Bot::Types::InputMediaPhoto.new(media:"#{image_2}"),
@@ -233,7 +228,7 @@ class Bot
                 bot.api.send_media_group(chat_id: message.chat.id, media: media)
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
-                retry if (retries += 1) < 3
+                retry if (retries += 1) < 2
                 bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
               end
               
