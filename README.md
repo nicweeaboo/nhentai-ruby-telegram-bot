@@ -22,6 +22,6 @@ I just made for the meme and fun. Probably won't code nothing more.
 <img src="https://i.imgur.com/tw8WXpc.png" />
 <img src="https://i.imgur.com/nsFW8ER.png" />
 
-### This project was deployed using Heroku.
+### This project was deployed using Heroku free tier. I have only 500 hours to keep the bot alive and a month have 700 hours. So for a few days the bot will be dead.
 
 👌🏻 Very likely to break.
