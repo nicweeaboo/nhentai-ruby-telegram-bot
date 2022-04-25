@@ -1,7 +1,9 @@
 # nhentai-ruby-telegram-bot
 This is a telegram bot written with ruby and the ruby nhentai-api and scrapping code. <br>
 There is space for many improvements and refactor the code.
-I just made for the meme and fun. Probably won't code nothing more.
+I just made for the meme and fun. Probably won't code nothing more.<br><br>
+This bot is crashing due the nhentai-api gem requests but still working.
+
 
 ### Commands
 `/today` - returns the nhentai doujinshi based on current date (23/04/22 - 230422). <br>
