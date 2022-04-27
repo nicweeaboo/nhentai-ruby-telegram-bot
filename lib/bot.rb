@@ -254,22 +254,23 @@ class Bot
               bot.api.send_message(chat_id: message.chat.id,
                 text: "Bot made by <b>nicweeaboo</b>\n👉🏼 Bot source code: <a href='https://github.com/nicweeaboo/nhentai-ruby-telegram-bot'>Check out here</a>\n\nPls do not google my username.", parse_mode: "HTML")
             
-            when /^\/tag\s+(\w+)$/
-              tag = message.text.sub(/\/tag\s/,'')
-              url = "https://nhentai.net/tag/#{tag}/popular-today"
-              begin
-                html = RestClient.get(url)
-                html_parsed = Nokogiri::HTML(html)
-                list = html_parsed.css("div.gallery a.cover")
-                result = list.to_a.sample
-                bot.api.send_message(chat_id: message.chat.id,
-                  text: "I recommend <a href='#{result.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{result.values[0]}", parse_mode: "HTML")
-              rescue StandardError => e
-                img = Dir['public/images/default/*'].sample
-                bot.api.send_photo(chat_id: message.chat.id,
-                  caption: "I couldn't find this tag. Sorry onii-chan",
-                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
-              end
+              when /\/tag\s([\w\s]+)/
+                tags = message.text.sub(/\/tag\s/,'')
+                
+                url = "https://nhentai.net/search/?q=#{tags.sub(' ', '+')}&sort=popular-today"
+                begin
+                  html = RestClient.get(url)
+                  html_parsed = Nokogiri::HTML(html)
+                  list = html_parsed.css("div.gallery a.cover")
+                  result = list.to_a.sample
+                  bot.api.send_message(chat_id: message.chat.id,
+                    text: "I recommend <a href='#{result.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{result.values[0]}", parse_mode: "HTML")
+                rescue StandardError => e
+                  img = Dir['public/images/default/*'].sample
+                  bot.api.send_photo(chat_id: message.chat.id,
+                    caption: "I couldn't find anything. Sorry onii-chan",
+                    photo: Faraday::UploadIO.new(img, 'image/jpg'))
+                end
 
             end
           end
