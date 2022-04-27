@@ -141,7 +141,9 @@ class Bot
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
                 retry if (retries += 1) < 3
-                bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
+                bot.api.send_photo(chat_id: message.chat.id,
+                  caption: "Something went. Sorry onii-chan",
+                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
 
             when '/feet', '/feet@sadistic_oneesan_ruby_bot'
@@ -169,7 +171,9 @@ class Bot
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
                 retry if (retries += 1) < 2
-                bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
+                bot.api.send_photo(chat_id: message.chat.id,
+                  caption: "Something went. Sorry onii-chan",
+                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
             
             when '/yuri', '/yuri@sadistic_oneesan_ruby_bot'
@@ -199,7 +203,9 @@ class Bot
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
                 retry if (retries += 1) < 2
-                bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
+                bot.api.send_photo(chat_id: message.chat.id,
+                  caption: "Something went. Sorry onii-chan",
+                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
 
             when '/thighhighs', '/thighhighs@sadistic_oneesan_ruby_bot'
@@ -229,7 +235,10 @@ class Bot
               rescue Telegram::Bot::Exceptions::ResponseError, RestClient::ExceptionWithResponse
                 sleep(20)
                 retry if (retries += 1) < 2
-                bot.api.send_message(chat_id: message.chat.id, text: "Something went wrong. Sorry onii-chan...")
+                img = Dir['public/images/default/*'].sample
+                bot.api.send_photo(chat_id: message.chat.id,
+                  caption: "Something went. Sorry onii-chan",
+                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
               
             when '/milf', '/milf@sadistic_oneesan_ruby_bot'
@@ -244,6 +253,24 @@ class Bot
             when '/about', '/about@sadistic_oneesan_ruby_bot'
               bot.api.send_message(chat_id: message.chat.id,
                 text: "Bot made by <b>nicweeaboo</b>\n👉🏼 Bot source code: <a href='https://github.com/nicweeaboo/nhentai-ruby-telegram-bot'>Check out here</a>\n\nPls do not google my username.", parse_mode: "HTML")
+            
+            when /^\/tag\s+(\w+)$/
+              tag = message.text.sub(/\/tag\s/,'')
+              url = "https://nhentai.net/tag/#{tag}/popular-today"
+              begin
+                html = RestClient.get(url)
+                html_parsed = Nokogiri::HTML(html)
+                list = html_parsed.css("div.gallery a.cover")
+                result = list.to_a.sample
+                bot.api.send_message(chat_id: message.chat.id,
+                  text: "I recommend <a href='#{result.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{result.values[0]}", parse_mode: "HTML")
+              rescue StandardError => e
+                img = Dir['public/images/default/*'].sample
+                bot.api.send_photo(chat_id: message.chat.id,
+                  caption: "I couldn't find this tag. Sorry onii-chan",
+                  photo: Faraday::UploadIO.new(img, 'image/jpg'))
+              end
+
             end
           end
         end
