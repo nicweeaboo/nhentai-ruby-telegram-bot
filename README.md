@@ -7,6 +7,7 @@ This bot is crashing due the nhentai-api gem requests but still working.
 
 ### Commands
 `/today` - returns the nhentai doujinshi based on current date (23/04/22 - 230422). <br>
+`/tag {tag}` - return a doujinshi based on tags you search. it can one or more tags.<br>
 `/code {5 or 6 digit code}` - returns the corresponding nhentai doujinshi.<br>
 `/random` - returns a random doujinshi from nhentai.<br>
 `/milf` - returns a random milf english doujinshi from the 10 first popular pages of current week.
@@ -23,6 +24,7 @@ This bot is crashing due the nhentai-api gem requests but still working.
 <img src="https://i.imgur.com/880yr8G.png" />
 <img src="https://i.imgur.com/tw8WXpc.png" />
 <img src="https://i.imgur.com/nsFW8ER.png" />
+<img src="https://i.imgur.com/hMgNNu0.png" />
 
 ### This project was deployed using Heroku free tier. I have only 500 hours to keep the bot alive and a month have 700 hours. So for a few days the bot will be dead.
 
