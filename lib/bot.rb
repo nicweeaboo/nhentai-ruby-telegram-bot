@@ -10,7 +10,7 @@ class Bot
   def initialize
 
     token = ENV['TELEGRAM_BOT_H']
-    
+
     Telegram::Bot::Client.run(token) do |bot|
       begin
         bot.listen do |message|
@@ -18,10 +18,10 @@ class Bot
           when Telegram::Bot::Types::Message
 
             case message.text
-          
+
             when '/today', '/today@sadistic_oneesan_ruby_bot'
               begin
-                today_doujinshi = Doujinshi.new(Time.now.strftime("%d%m%y"))
+                today_doujinshi = Doujinshi.new(id: Time.now.strftime("%d%m%y"))
               rescue Exception => e
                 bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
                 break
@@ -29,10 +29,10 @@ class Bot
               if today_doujinshi.exists?
                 today_doujinshi_tags = []
                 today_doujinshi.tags.each do |tag|
-                  today_doujinshi_tags << tag.name.gsub!('<span class="name">','')
+                  today_doujinshi_tags << tag.name
                 end
-                bot.api.send_message(chat_id: message.chat.id, 
-                  text: "<b>Nhentai doujinshi based on today's date #{Time.now.strftime("%d/%m/%y")} (#{Time.now.strftime("%d%m%y")}) </b>\n<a href='#{today_doujinshi.cover}'><b>TITLE: #{today_doujinshi.title}</b></a>\n<b>TAGS: #{today_doujinshi_tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{today_doujinshi.id}'><b>READ NOW</b></a>",
+                bot.api.send_message(chat_id: message.chat.id,
+                  text: "<b>Nhentai doujinshi based on today's date #{Time.now.strftime("%d/%m/%y")} (#{Time.now.strftime("%d%m%y")}) </b>\n<a href='#{today_doujinshi.cover}'><b>TITLE: #{today_doujinshi.title(type: :pretty)}</b></a>\n<b>TAGS: #{today_doujinshi_tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{today_doujinshi.id}'><b>READ NOW</b></a>",
                   parse_mode: "HTML")
               else
                 bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
@@ -41,7 +41,7 @@ class Bot
             when /^\/code ([0-9]+)$/
               code = message.text.delete('^0-9')
               begin
-                doujinshi=Doujinshi.new(code)
+                doujinshi = Doujinshi.new(id: code)
               rescue Exception => e
                 bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
                 break
@@ -50,7 +50,7 @@ class Bot
                 tags = []
                 begin
                   doujinshi.tags.each do |tag|
-                    tags << tag.name.gsub!('<span class="name">','')
+                    tags << tag.name
                   end
                 rescue NoMethodError
                   tags << "TagsError"
@@ -63,23 +63,23 @@ class Bot
                   img = html_parsed.css("div#cover>a>img")
                   cover = img.attr("data-src").value
                 end
-                  bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
+                  bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title(type: :pretty)}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                   parse_mode: "HTML")
               else
                   bot.api.send_message(chat_id: message.chat.id, text: "Couldn't find any ;/" )
               end
-          
+
             when '/joke', '/joke@sadistic_oneesan_ruby_bot'
               joke = Joke.new(JOKE_TYPES.sample)
               jokes = joke.run
               if joke.type == 'twopart'
-                bot.api.send_message(chat_id: message.chat.id, 
+                bot.api.send_message(chat_id: message.chat.id,
                   text: "<b>- #{jokes[0]}</b>\n\n- #{jokes[1]}", parse_mode: "HTML")
               else
-                bot.api.send_message(chat_id: message.chat.id, 
+                bot.api.send_message(chat_id: message.chat.id,
                   text: "#{jokes[0]}")
               end
-              
+
             when '/neko', '/neko@sadistic_oneesan_ruby_bot'
               neko = Neko.new(NEKO_TYPES.sample).run
               bot.api.send_message(chat_id: message.chat.id,
@@ -89,7 +89,7 @@ class Bot
             when '/random', '/random@sadistic_oneesan_ruby_bot'
               begin
                 begin
-                  doujinshi = Doujinshi.new(rand(1000...999999))
+                  doujinshi = Doujinshi.random
                 rescue Exception => e
                   bot.api.send_message(chat_id: message.chat.id, text:"Something went very wrong...")
                   break
@@ -98,9 +98,9 @@ class Bot
               tags = []
               begin
                 doujinshi.tags.each do |tag|
-                  tags << tag.name.gsub!('<span class="name">','')
+                  tags << tag.name
                 end
-              rescue NoMethodError 
+              rescue NoMethodError
                 tags << "TagsError"
               end
               begin
@@ -111,14 +111,14 @@ class Bot
                 img = html_parsed.css("div#cover>a>img")
                 cover = img.attr("data-src").value
               end
-                bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
+                bot.api.send_message(chat_id: message.chat.id, text: "<a href='#{cover}'><b>TITLE: #{doujinshi.title(type: :pretty)}</b></a>\n<b>TAGS: #{tags[0..12].join(', ')}</b>\n<a href='https://nhentai.net/g/#{doujinshi.id}'><b>READ NOW</b></a>",
                 parse_mode: "HTML")
 
             when '/genshin_impact', '/genshin_impact@sadistic_oneesan_ruby_bot'
               begin
                 retries ||= 0
                 url = "https://yande.re/post?page=#{rand(1..100)}&tags=genshin_impact"
-                html = RestClient.get(url)  
+                html = RestClient.get(url)
                 html_parsed = Nokogiri::HTML(html)
                 list= html_parsed.css("ul#post-list-posts")
                 elements = list.css("li>a.directlink")
@@ -150,7 +150,7 @@ class Bot
               begin
                 retries ||= 0
                 url = "https://yande.re/post?page=#{rand(1..800)}&tags=feet"
-                html = RestClient.get(url)  
+                html = RestClient.get(url)
                 html_parsed = Nokogiri::HTML(html)
                 list= html_parsed.css("ul#post-list-posts")
                 elements = list.css("li>a.directlink")
@@ -175,12 +175,12 @@ class Bot
                   caption: "Something went. Sorry onii-chan",
                   photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
-            
+
             when '/yuri', '/yuri@sadistic_oneesan_ruby_bot'
               begin
                 retries ||= 0
                 url = "https://yande.re/post?page=#{rand(1..300)}&tags=yuri"
-                html = RestClient.get(url)  
+                html = RestClient.get(url)
                 html_parsed = Nokogiri::HTML(html)
                 list= html_parsed.css("ul#post-list-posts")
                 elements = list.css("li>a.directlink")
@@ -212,7 +212,7 @@ class Bot
               begin
                 retries ||= 0
                 url = "https://yande.re/post?page=#{rand(1..300)}&tags=thighhighs"
-                html = RestClient.get(url)  
+                html = RestClient.get(url)
                 html_parsed = Nokogiri::HTML(html)
                 list= html_parsed.css("ul#post-list-posts")
                 elements = list.css("li>a.directlink")
@@ -240,31 +240,25 @@ class Bot
                   caption: "Something went. Sorry onii-chan",
                   photo: Faraday::UploadIO.new(img, 'image/jpg'))
               end
-              
+
             when '/milf', '/milf@sadistic_oneesan_ruby_bot'
-              url = "https://nhentai.net/search/?q=milf+-chinese+-japanese&sort=popular-week&page=#{rand(1..10)}"
-              html = RestClient.get(url)
-              html_parsed = Nokogiri::HTML(html)
-              list = html_parsed.css("div.gallery a.cover")
-              milf = list.to_a.sample
+              search = Search.new(options: { keywords: { included: ["milf"], excluded: ["chinese", "japanese"] } }, sort: :week, page: rand(1..10))
+              milf = search.listing.sample
               bot.api.send_message(chat_id: message.chat.id,
-                text: "I recommend <a href='#{milf.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{milf.values[0]}", parse_mode: "HTML")
-            
+                text: "I recommend <a href='#{milf.cover}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net/g/#{milf.id}", parse_mode: "HTML")
+
             when '/about', '/about@sadistic_oneesan_ruby_bot'
               bot.api.send_message(chat_id: message.chat.id,
                 text: "Bot made by <b>nicweeaboo</b>\n👉🏼 Bot source code: <a href='https://github.com/nicweeaboo/nhentai-ruby-telegram-bot'>Check out here</a>\n\nPls do not google my username.", parse_mode: "HTML")
-            
+
               when /\/tag\s([\w\s]+)/
                 tags = message.text.sub(/\/tag\s/,'')
-                
-                url = "https://nhentai.net/search/?q=#{tags.sub(' ', '+')}&sort=popular-today"
+
+                search = Search.new(options: { keywords: { included: tags.split('+') } }, sort: :today)
                 begin
-                  html = RestClient.get(url)
-                  html_parsed = Nokogiri::HTML(html)
-                  list = html_parsed.css("div.gallery a.cover")
-                  result = list.to_a.sample
+                  result = search.listing.sample
                   bot.api.send_message(chat_id: message.chat.id,
-                    text: "I recommend <a href='#{result.css('img.lazyload').attr('data-src').value}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net#{result.values[0]}", parse_mode: "HTML")
+                    text: "I recommend <a href='#{result.cover}'>this</a> one 👌🏼\n<b>READ HERE:</b> nhentai.net/g/#{result.id}", parse_mode: "HTML")
                 rescue StandardError => e
                   img = Dir['public/images/default/*'].sample
                   bot.api.send_photo(chat_id: message.chat.id,
