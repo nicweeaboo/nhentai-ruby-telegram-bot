@@ -16,7 +16,7 @@ class Bot
           return unless message == Telegram::Bot::Types::Message
 
           if %w[
-              /today /code /joke /neko /random /genshin_impact /feet /yuri /thighhighs /milf /about /tags
+              /today /code /joke /neko /random /genshin_impact /feet /yuri /thighhighs /milf /about /tag
               /today@sadistic_oneesan_ruby_bot /joke@sadistic_oneesan_ruby_bot /neko@sadistic_oneesan_ruby_bot
               /random@sadistic_oneesan_ruby_bot /genshin_impact@sadistic_oneesan_ruby_bot /feet@sadistic_oneesan_ruby_bot
               /yuri@sadistic_oneesan_ruby_bot /thighhighs@sadistic_oneesan_ruby_bot /milf@sadistic_oneesan_ruby_bot
@@ -220,7 +220,7 @@ class Bot
                          text: "Bot made by <b>nicweeaboo</b>\n👉🏼 Bot source code: <a href='https://github.com/nicweeaboo/nhentai-ruby-telegram-bot'>Check out here</a>\n\nPls do not google my username.", parse_mode: "HTML")
   end
 
-  def tags(bot, message)
+  def tag(bot, message)
     tags = message.text.sub(/\/tag\s/,'')
     search = Search.new(options: { keywords: { included: tags.split('+') } }, sort: :today)
     begin
