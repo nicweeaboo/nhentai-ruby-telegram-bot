@@ -17,8 +17,6 @@ This bot is crashing due the nhentai-api gem requests but still working.
 
 ### Screenshots
 <img src="https://i.imgur.com/tw8WXpc.png" />
-<img src="https://i.imgur.com/nsFW8ER.png" />
-<img src="https://i.imgur.com/hMgNNu0.png" />
 
 ### This project was deployed using Heroku free tier.
 
